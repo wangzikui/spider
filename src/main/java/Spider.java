@@ -32,7 +32,7 @@ public class Spider {
         chromeOptions.addArguments("--headless");
         chromeOptions.addArguments("--disable-gpu");
         chromeOptions.addArguments("lang=zh_CN.UTF-8");
-        chromeOptions.addArguments("user-agent=Mozilla/5.0 (Macintosh; Intel Mac OS X 10_14_5) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/77.0.3865.120 Safari/537.36");
+        chromeOptions.addArguments("user-agent=Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/77.0.3865.120 Safari/537.36");
         DesiredCapabilities dc = DesiredCapabilities.chrome();
         dc.setCapability(ChromeOptions.CAPABILITY, chromeOptions);
         return new RemoteWebDriver(service.getUrl(), dc);
@@ -43,8 +43,9 @@ public class Spider {
         WebDriver webDriver = spider.getChromeDriver();
         int i = 10;
         while (i > 0) {
-            webDriver.get("https://www.baidu.com/");
-            System.out.println(webDriver.getTitle());
+            webDriver.get("https://www.zhihu.com/people/basicthinker/following");
+            System.out.println(i + "---------------------------------------------------------------------------------------------------");
+            System.out.println(webDriver.getPageSource());
             Thread.sleep(3000);
             --i;
         }

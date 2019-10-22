@@ -1,0 +1,6 @@
+关注与被关注：
+对标志性的urltoken做查询，结果相同
+https://www.zhihu.com/people/basicthinker/followers
+翻页相关：https://www.zhihu.com/people/basicthinker/following?page=2	第二页
+"followerCount":974,"followingCount":304	每页20人
+https://www.zhihu.com/people/${urltoken}/...	查询
