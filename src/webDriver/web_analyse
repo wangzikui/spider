@@ -1,6 +1,22 @@
 关注与被关注：
-对标志性的urltoken做查询，结果相同
+对标志性的urltoken做查询,后跟用户个性域名路由
 https://www.zhihu.com/people/basicthinker/followers
 翻页相关：https://www.zhihu.com/people/basicthinker/following?page=2	第二页
 "followerCount":974,"followingCount":304	每页20人
 https://www.zhihu.com/people/${urltoken}/...	查询
+business后json内有所在行业名
+
+回答：
+回答数："zhihu:answerCount" content="27"
+一页20，分页
+匹配第一个"ids"后的[733345325,689570417,689567708,646065072,639054337,376292523,366184154,176528653,157576160,121267551,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null]
+或"https://www.zhihu.com/question/\d*?"
+或"用户个性id":{"isDrained":.*,"isFetching":false,"ids".*?]
+
+提问：
+asks
+"用户个性id":{"isDrained":.*,"isFetching":false,"ids".*?]
+或匹配第一个"ids"后的[344873613,36315782,21279169,21093336,20849021,20127917,20126033,19989833,false,false,false,false,false,false,false,false,false,false,false,false]，内为问题标号
+
+问题：
+<meta itemprop="keywords" content="编程,Linux,计算机,开源,计算机科学">

@@ -43,7 +43,7 @@ public class Spider {
         WebDriver webDriver = spider.getChromeDriver();
         int i = 10;
         while (i > 0) {
-            webDriver.get("https://www.zhihu.com/people/basicthinker/following");
+            webDriver.get("https://www.zhihu.com/question/33573424");
             System.out.println(i + "---------------------------------------------------------------------------------------------------");
             System.out.println(webDriver.getPageSource());
             Thread.sleep(3000);
