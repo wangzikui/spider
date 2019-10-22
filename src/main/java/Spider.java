@@ -18,7 +18,7 @@ public class Spider {
      */
 
     public WebDriver getChromeDriver() throws MalformedURLException {
-        System.setProperty("webdriver.chrome.driver","src/webDriver/chromedriver");
+        System.setProperty("webdriver.chrome.driver","src/webDriver/forWin/chromedriver.exe");
         //创建一个　ChromeDriver 接口
         service = new ChromeDriverService.Builder().usingDriverExecutable(new File(System.getProperty("webdriver.chrome.driver"))).usingAnyFreePort().build();
         try {
