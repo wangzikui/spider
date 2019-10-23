@@ -20,8 +20,8 @@ public class IOProcess implements Runnable{
         this.outputFile = outputFile;
         this.outputLimit = outputLimit;
         try {
-            br = new BufferedReader(new InputStreamReader(new FileInputStream(inputFile)));
-            out = new BufferedWriter(new FileWriter(new File(outputFile), true));
+            br = new BufferedReader(new InputStreamReader(new FileInputStream(this.inputFile)));
+            out = new BufferedWriter(new FileWriter(new File(this.outputFile), true));
         } catch (IOException e) {
             logger.error("inputFile：" + inputFile + "|outputfile:" + outputFile + "|inputLine" + outputLimit, e);
         }
@@ -32,9 +32,9 @@ public class IOProcess implements Runnable{
         logger.info("开始工作：inputFile：" + inputFile + "|outputfile:" + outputFile + "|inputLine" + outputLimit);
         while (outputLimit > 0) {
             String source = readLine();
-            if (source.isEmpty()) break;    //感觉不够优雅
+            if (source == null || source.isEmpty()) break;    //感觉不够优雅
             //TODO: 交由webProcess处理
-            writeLine("");
+            writeLine(source + "\n");
             --outputLimit;
         }
         close();
@@ -64,7 +64,8 @@ public class IOProcess implements Runnable{
         try {
             br.close();
             out.close();
-
+            String oriOutputfile = outputFile.substring(0, outputFile.length() - 4);
+            new File(outputFile).renameTo(new File(oriOutputfile));     //还原.tmp命名
         } catch (IOException e) {
             logger.error("inputFile：" + inputFile + "|outputfile:" + outputFile + "|inputLine" + outputLimit, e);
         }

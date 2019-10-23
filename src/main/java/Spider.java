@@ -1,3 +1,5 @@
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.chrome.ChromeDriverService;
 import org.openqa.selenium.chrome.ChromeOptions;
@@ -9,6 +11,8 @@ import java.io.IOException;
 import java.net.MalformedURLException;
 
 public class Spider {
+
+    private static Logger logger = LogManager.getLogger(Spider.class);
     private static ChromeDriverService service;
     private static WebDriver webDriver;
 
@@ -39,17 +43,13 @@ public class Spider {
     }
 
     public static void main(String[] args) throws MalformedURLException, InterruptedException {
-        Spider spider = new Spider();
+        /*Spider spider = new Spider();
         WebDriver webDriver = spider.getChromeDriver();
-        int i = 10;
-        while (i > 0) {
-            webDriver.get("https://www.zhihu.com/question/33573424");
-            System.out.println(i + "---------------------------------------------------------------------------------------------------");
-            System.out.println(webDriver.getPageSource());
-            Thread.sleep(3000);
-            --i;
-        }
-
-        webDriver.close();
+        webDriver.get("https://www.zhihu.com/question/33573424");
+        webDriver.getPageSource();
+        webDriver.close();*/
+        IOProcessManager ioProcessManager = new IOProcessManager();
+        ioProcessManager.init();
+        ioProcessManager.addProcess();
     }
 }
