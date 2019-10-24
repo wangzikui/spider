@@ -4,10 +4,7 @@ import org.apache.logging.log4j.Logger;
 import java.io.File;
 import java.io.FileFilter;
 import java.util.Random;
-import java.util.concurrent.CountDownLatch;
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
-import java.util.concurrent.TimeUnit;
+import java.util.concurrent.*;
 
 public class IOProcessManager {
 
@@ -21,16 +18,19 @@ public class IOProcessManager {
     private String outputSuffix = ".txt";  //匹配输出文件后缀
     private int outputLimit = 100; //超出limit，将.tmp后缀去掉，并关闭输出流
     private int maxAsycNum = 5; //最大同时工作的线程
-    private ExecutorService pool = null;    //管理IOProcess的线程池
+    private ThreadPoolExecutor pool = null;    //管理IOProcess的线程池
 
-    public void init() {    //通过配置文件初始化
-        pool = Executors.newFixedThreadPool(maxAsycNum);
+    public void init() {    //TODO:通过配置文件初始化
+        //防止线程池不释放
+        pool = (ThreadPoolExecutor)Executors.newFixedThreadPool(maxAsycNum);
+        pool.setKeepAliveTime(5, TimeUnit.SECONDS);
+        pool.allowCoreThreadTimeOut(true);
     }
 
 
     public void addProcess() {
         String lockedSourceFileName = preProcessForUpStream();
-        if (lockedSourceFileName == null || lockedSourceFileName.isEmpty()) {
+        if (lockedSourceFileName.isEmpty()) {
             logger.info(lockedSourceFileName + "非法");
             return;
         }
