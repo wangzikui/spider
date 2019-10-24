@@ -43,13 +43,11 @@ public class Spider {
     }
 
     public static void main(String[] args) throws MalformedURLException, InterruptedException {
-        /*Spider spider = new Spider();
-        WebDriver webDriver = spider.getChromeDriver();
-        webDriver.get("https://www.zhihu.com/question/33573424");
-        webDriver.getPageSource();
-        webDriver.close();*/
-        IOProcessManager ioProcessManager = new IOProcessManager();
+
+        /*IOProcessManager ioProcessManager = new IOProcessManager();
         ioProcessManager.init();
-        ioProcessManager.addProcess();
+        ioProcessManager.addProcess();*/
+        WebProcess webProcess = new WebProcess("src/webDriver/forWin/chromedriver.exe", "https://www.zhihu.com/people/");
+        webProcess.work("hu-yong-ke");
     }
 }

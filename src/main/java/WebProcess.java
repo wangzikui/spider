@@ -1,6 +1,8 @@
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+import org.openqa.selenium.By;
 import org.openqa.selenium.WebDriver;
+import org.openqa.selenium.WebElement;
 import org.openqa.selenium.chrome.ChromeDriverService;
 import org.openqa.selenium.chrome.ChromeOptions;
 import org.openqa.selenium.remote.DesiredCapabilities;
@@ -8,6 +10,11 @@ import org.openqa.selenium.remote.RemoteWebDriver;
 
 import java.io.File;
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
+
 /*
 执行于第一阶段爬虫
 爬取urltoken下的    关注与被关注18行   answers第19行 asks第18行
@@ -17,6 +24,7 @@ public class WebProcess {
     private static Logger logger = LogManager.getLogger(WebProcess.class);
 
     private WebDriver webDriver;
+    private ArrayList<Pattern> patterns = new ArrayList<>();
     private String url = "https://www.zhihu.com/people/";
 
     public WebProcess(String driverLoc, String url) {
@@ -38,11 +46,25 @@ public class WebProcess {
         DesiredCapabilities dc = DesiredCapabilities.chrome();
         dc.setCapability(ChromeOptions.CAPABILITY, chromeOptions);
         webDriver = new RemoteWebDriver(service.getUrl(), dc);
+
+        //String pattern = "(?<=urltoken\":\").*?(?=\")";   //匹配urltoken
+        String pattern = "(?<=urlToken\":\").*?(?=\")";
+        patterns.add(Pattern.compile(pattern));
     }
 
     public String work(String input) {
-        String people = url + input;    //e.g. https://www.zhihu.com/people/octavia-51-97/
-        String following = people + "/" + "following";
+        String peopleUrl = url + input;    //e.g. https://www.zhihu.com/people/octavia-51-97/
+        String followingUrl = peopleUrl + "/" + "following";  //e.g. https://www.zhihu.com/people/octavia-51-97/following //TODO:考虑是否把followers加上
+        String answersUrl = peopleUrl + "/" + "answers";  //https://www.zhihu.com/people/octavia-51-97/answers    //TODO:考虑是否把asks加上
+
+        webDriver.get(followingUrl);
+        logger.info(webDriver.getPageSource());
+        Matcher m = patterns.get(0).matcher(webDriver.getPageSource());
+        logger.info(m.find());
+        while (m.find()) {
+            logger.info(m.group());
+        }
+
         return input;
     }
 
