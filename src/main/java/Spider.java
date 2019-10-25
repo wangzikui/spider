@@ -1,3 +1,5 @@
+import WebProcess.ExtendUserToken;
+import WebProcess.IWorkable;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.openqa.selenium.WebDriver;
@@ -42,15 +44,47 @@ public class Spider {
     }
 
     public static void main(String[] args) throws InterruptedException {
+        /*try {
+            extendUrlTokens();
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }*/
+        reduceDuplicate();
+    }
 
+    public static void extendUrlTokens() throws InterruptedException{
         IOProcessManager ioProcessManager = new IOProcessManager();
         ioProcessManager.init();
         int i = 50;
         while (i > 0) {
-            WebProcess webProcess = new WebProcess();
+            IWorkable webProcess = new ExtendUserToken();
             ioProcessManager.addProcess(webProcess);
-            Thread.sleep(1000*60);
+            Thread.sleep(1000*20);
             --i;
         }
+
+        //WebProcess webProcess = new WebProcess();
+        //webProcess.work("biao-jie-ying-ping");
+    }
+
+    public static void reduceDuplicate() throws InterruptedException {  //去重
+        IOProcessManager ioProcessManager = new IOProcessManager( "src/ioDir/urltokens_input",  "src/ioDir/urltokens_output", "", "txt", 2000);
+        ioProcessManager.init();
+
+        /*WebProcess.IWorkable reduceDup = new ReduceDup();
+        ioProcessManager.addProcess(reduceDup);*/
+
+        int i = 124;
+        while (i > 0) {
+            IWorkable reduceDup = new ReduceDup();
+            ioProcessManager.addProcess(reduceDup);
+            --i;
+            Thread.sleep(1000*5);
+        }
+
+    }
+
+    public static void getLocBusinessQuestion() {
+
     }
 }

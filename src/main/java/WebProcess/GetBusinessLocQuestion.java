@@ -1,8 +1,8 @@
+package WebProcess;
+
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-import org.openqa.selenium.By;
 import org.openqa.selenium.WebDriver;
-import org.openqa.selenium.WebElement;
 import org.openqa.selenium.chrome.ChromeDriverService;
 import org.openqa.selenium.chrome.ChromeOptions;
 import org.openqa.selenium.remote.DesiredCapabilities;
@@ -11,23 +11,22 @@ import org.openqa.selenium.remote.RemoteWebDriver;
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
-import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-/*
-执行于第一阶段爬虫
-爬取urltoken下的    关注与被关注18行   answers第19行 asks第18行
- */
-//TODO: 耦合直接进了IOProcess，url切入时机不好，有空改。
-public class WebProcess {
-    private static Logger logger = LogManager.getLogger(WebProcess.class);
+/**
+ * 输入urlTokens
+ * 输出business   location    Question（逗号分隔）  ------\t分隔
+ * */
+public class GetBusinessLocQuestion implements IWorkable{
+
+    private static Logger logger = LogManager.getLogger(GetBusinessLocQuestion.class);
 
     private WebDriver webDriver;
     private String driverLoc = "src/webDriver/forWin/chromedriver.exe";
     private String url = "https://www.zhihu.com/people/";
     private ArrayList<Pattern> patterns = new ArrayList<>();
 
-    public WebProcess() {
+    public GetBusinessLocQuestion() {
         //创建一个　ChromeDriver 接口
         System.setProperty("webdriver.chrome.driver",this.driverLoc);
         ChromeDriverService service = new ChromeDriverService.Builder().usingDriverExecutable(new File(System.getProperty("webdriver.chrome.driver"))).usingAnyFreePort().build();
@@ -46,39 +45,27 @@ public class WebProcess {
         dc.setCapability(ChromeOptions.CAPABILITY, chromeOptions);
         webDriver = new RemoteWebDriver(service.getUrl(), dc);
 
-        //String pattern = "(?<=urltoken\":\").*?(?=\")";   //匹配urltoken
-        String pattern = "(?<=urlToken\":\").*?(?=\")";
-        patterns.add(Pattern.compile(pattern));
+        String pattern1 = "(?<=business).*?\"name\":\".*?(?=\")";   //":{"id":"19619368","type":"topic","url":"http:\u002F\u002Fwww.zhihu.com\u002Ftopics\u002F19619368","name":"计算机软件
+        patterns.add(Pattern.compile(pattern1));
+        String pattern2 = "(?<=locations).*?\"name\":\".*?(?=\")"; //":[{"id":"19560551","type":"topic","url":"http:\u002F\u002Fwww.zhihu.com\u002Ftopics\u002F19560551","name":"深圳市
+        patterns.add(Pattern.compile(pattern2));
+        String pattern3 = "(?<=answersByUser\":).*(?=,\"totals)";   //{"yunduanxxooo":{"isDrained":false,"isFetching":false,"ids":[868932101,868879160,868846834,866405653,865363451,865359416,865356867,865356012,865351217,865348945,null,null]
     }
 
-
-
-    public WebProcess(String driverLoc, String url) {
-        this.url = url;
-        this.driverLoc = driverLoc;
-        new WebProcess();
-    }
-
+    @Override
     public String work(String input) {
         String peopleUrl = url + input;    //e.g. https://www.zhihu.com/people/octavia-51-97/
-        String followingUrl = peopleUrl + "/" + "following";  //e.g. https://www.zhihu.com/people/octavia-51-97/following //TODO:考虑是否把followers加上
         String answersUrl = peopleUrl + "/" + "answers";  //https://www.zhihu.com/people/octavia-51-97/answers    //TODO:考虑是否把asks加上
 
         StringBuilder sb = new StringBuilder();
-
-        webDriver.get(followingUrl);
-        Matcher m = patterns.get(0).matcher(webDriver.getPageSource());
-        while (m.find()) {
-            String tmp = m.group();
-            if (tmp.equals(input)) continue;
-            sb.append(tmp);
-            sb.append("\n");
-        }
-
-        return sb.toString();
+        webDriver.get(answersUrl);
+        webDriver.getPageSource();
+        //TODO:执行
+        return null;
     }
 
+    @Override
     public void close() {
-        webDriver.close();
+
     }
 }

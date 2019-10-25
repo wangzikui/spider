@@ -1,3 +1,4 @@
+import WebProcess.IWorkable;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -12,7 +13,7 @@ public class IOProcess implements Runnable{
     private BufferedReader br;
     private BufferedWriter out;
 
-    private WebProcess webProcess;
+    private IWorkable workable;
 
     public IOProcess (String inputFile, String outputFile, int outputLimit) {
         outputFile = outputFile + ".tmp";   //未写好的文件后缀tmp
@@ -28,23 +29,24 @@ public class IOProcess implements Runnable{
             logger.error("inputFile：" + inputFile + "|outputfile:" + outputFile + "|inputLine" + outputLimit, e);
         }
     }
+
     @Override
     public void run() {
         logger.info("开始工作：inputFile：" + inputFile + "|outputfile:" + outputFile + "|inputLine" + outputLimit);
         while (outputLimit > 0) {
             String source = readLine();
-            if (source == null || source.isEmpty()) break;    //感觉不够优雅
             //TODO: 交由webProcess处理
-            String result = webProcess.work(source);
+            String result = workable.work(source);
             writeLine(result);
+            if (source == null || source.isEmpty()) break;    //感觉不够优雅
             --outputLimit;
         }
         close();
         logger.info("工作完成：inputFile：" + inputFile + "|outputfile:" + outputFile + "|inputLine" + outputLimit);
     }
 
-    public void setWebProcess(WebProcess webProcess) {
-        this.webProcess = webProcess;
+    public void setWorkable(IWorkable workable) {
+        this.workable = workable;
     }
 
     public String readLine() {
@@ -67,10 +69,12 @@ public class IOProcess implements Runnable{
     }
 
     public void close() {
-        webProcess.close();
+        workable.close();
         try {
             br.close();
             out.close();
+            String lockedInputfile = inputFile + "ed";
+            new File(inputFile).renameTo(new File(lockedInputfile));
             String oriOutputfile = outputFile.substring(0, outputFile.length() - 4);
             new File(outputFile).renameTo(new File(oriOutputfile));     //还原.tmp命名
         } catch (IOException e) {

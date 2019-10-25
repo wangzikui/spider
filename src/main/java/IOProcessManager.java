@@ -1,3 +1,4 @@
+import WebProcess.IWorkable;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -20,6 +21,10 @@ public class IOProcessManager {
     private int maxAsycNum = 5; //最大同时工作的线程
     private ThreadPoolExecutor pool = null;    //管理IOProcess的线程池
 
+    public IOProcessManager() {
+
+    }
+
     public void init() {    //TODO:通过配置文件初始化
         //防止线程池不释放
         pool = (ThreadPoolExecutor)Executors.newFixedThreadPool(maxAsycNum);
@@ -27,7 +32,22 @@ public class IOProcessManager {
         pool.allowCoreThreadTimeOut(true);
     }
 
-    public void addProcess(WebProcess webProcess) {
+    public IOProcessManager(String upStreamDirectory, String downStreamDirectory) {
+        this.upStreamDirectory = upStreamDirectory;
+        this.downStreamDirectory = downStreamDirectory;
+        new IOProcessManager();
+    }
+
+    public IOProcessManager(String upStreamDirectory, String downStreamDirectory, String inputPrefix, String inputSuffix, int outputLimit) {
+        this.upStreamDirectory = upStreamDirectory;
+        this.downStreamDirectory = downStreamDirectory;
+        this.inputPrefix = inputPrefix;
+        this.inputSuffix = inputSuffix;
+        this.outputLimit = outputLimit;
+        new IOProcessManager();
+    }
+
+    public void addProcess(IWorkable workable) {
         String lockedSourceFileName = preProcessForUpStream();
         if (lockedSourceFileName.isEmpty()) {
             logger.info(lockedSourceFileName + "非法");
@@ -35,7 +55,7 @@ public class IOProcessManager {
         }
         String outputFileName = downStreamDirectory + "/" + outputPrefix + System.currentTimeMillis() + outputSuffix;
         IOProcess ioProcess = new IOProcess(lockedSourceFileName, outputFileName, outputLimit);
-        ioProcess.setWebProcess(webProcess);
+        ioProcess.setWorkable(workable);
         pool.submit(ioProcess);
     }
 
