@@ -14,7 +14,6 @@ public class Spider {
 
     private static Logger logger = LogManager.getLogger(Spider.class);
     private static ChromeDriverService service;
-    private static WebDriver webDriver;
 
     /**
      * 创建一个浏览器实例
@@ -42,12 +41,16 @@ public class Spider {
         return new RemoteWebDriver(service.getUrl(), dc);
     }
 
-    public static void main(String[] args) throws MalformedURLException, InterruptedException {
+    public static void main(String[] args) throws InterruptedException {
 
-        /*IOProcessManager ioProcessManager = new IOProcessManager();
+        IOProcessManager ioProcessManager = new IOProcessManager();
         ioProcessManager.init();
-        ioProcessManager.addProcess();*/
-        WebProcess webProcess = new WebProcess("src/webDriver/forWin/chromedriver.exe", "https://www.zhihu.com/people/");
-        webProcess.work("hu-yong-ke");
+        int i = 50;
+        while (i > 0) {
+            WebProcess webProcess = new WebProcess();
+            ioProcessManager.addProcess(webProcess);
+            Thread.sleep(1000*60);
+            --i;
+        }
     }
 }

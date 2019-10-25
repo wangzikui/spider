@@ -11,7 +11,7 @@ public class IOProcessManager {
     private static Logger logger = LogManager.getLogger(IOProcessManager.class);
 
     private String upStreamDirectory = "src/ioDir/urltokens_input";  //数据来向
-    private String downStreamDirectory = "src/ioDir/urltokens_output";    //数据去向
+    private String downStreamDirectory = "src/ioDir/urltokens_input";    //数据去向
     private String inputPrefix = "";  //匹配输入文件前缀
     private String inputSuffix = ".txt";    //匹配输入文件后缀
     private String outputPrefix = "";  //匹配输出文件前缀
@@ -27,8 +27,7 @@ public class IOProcessManager {
         pool.allowCoreThreadTimeOut(true);
     }
 
-
-    public void addProcess() {
+    public void addProcess(WebProcess webProcess) {
         String lockedSourceFileName = preProcessForUpStream();
         if (lockedSourceFileName.isEmpty()) {
             logger.info(lockedSourceFileName + "非法");
@@ -36,9 +35,8 @@ public class IOProcessManager {
         }
         String outputFileName = downStreamDirectory + "/" + outputPrefix + System.currentTimeMillis() + outputSuffix;
         IOProcess ioProcess = new IOProcess(lockedSourceFileName, outputFileName, outputLimit);
-
+        ioProcess.setWebProcess(webProcess);
         pool.submit(ioProcess);
-
     }
 
     private String preProcessForUpStream() {

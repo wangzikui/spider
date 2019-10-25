@@ -11,7 +11,6 @@ import org.openqa.selenium.remote.RemoteWebDriver;
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
-import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -24,13 +23,13 @@ public class WebProcess {
     private static Logger logger = LogManager.getLogger(WebProcess.class);
 
     private WebDriver webDriver;
-    private ArrayList<Pattern> patterns = new ArrayList<>();
+    private String driverLoc = "src/webDriver/forWin/chromedriver.exe";
     private String url = "https://www.zhihu.com/people/";
+    private ArrayList<Pattern> patterns = new ArrayList<>();
 
-    public WebProcess(String driverLoc, String url) {
-        this.url = url;
-        System.setProperty("webdriver.chrome.driver",driverLoc);
+    public WebProcess() {
         //创建一个　ChromeDriver 接口
+        System.setProperty("webdriver.chrome.driver",this.driverLoc);
         ChromeDriverService service = new ChromeDriverService.Builder().usingDriverExecutable(new File(System.getProperty("webdriver.chrome.driver"))).usingAnyFreePort().build();
         try {
             service.start();
@@ -52,20 +51,34 @@ public class WebProcess {
         patterns.add(Pattern.compile(pattern));
     }
 
+
+
+    public WebProcess(String driverLoc, String url) {
+        this.url = url;
+        this.driverLoc = driverLoc;
+        new WebProcess();
+    }
+
     public String work(String input) {
         String peopleUrl = url + input;    //e.g. https://www.zhihu.com/people/octavia-51-97/
         String followingUrl = peopleUrl + "/" + "following";  //e.g. https://www.zhihu.com/people/octavia-51-97/following //TODO:考虑是否把followers加上
         String answersUrl = peopleUrl + "/" + "answers";  //https://www.zhihu.com/people/octavia-51-97/answers    //TODO:考虑是否把asks加上
 
+        StringBuilder sb = new StringBuilder();
+
         webDriver.get(followingUrl);
-        logger.info(webDriver.getPageSource());
         Matcher m = patterns.get(0).matcher(webDriver.getPageSource());
-        logger.info(m.find());
         while (m.find()) {
-            logger.info(m.group());
+            String tmp = m.group();
+            if (tmp.equals(input)) continue;
+            sb.append(tmp);
+            sb.append("\n");
         }
 
-        return input;
+        return sb.toString();
     }
 
+    public void close() {
+        webDriver.close();
+    }
 }

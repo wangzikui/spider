@@ -12,6 +12,8 @@ public class IOProcess implements Runnable{
     private BufferedReader br;
     private BufferedWriter out;
 
+    private WebProcess webProcess;
+
     public IOProcess (String inputFile, String outputFile, int outputLimit) {
         outputFile = outputFile + ".tmp";   //未写好的文件后缀tmp
         logger.info("新建任务：inputFile：" + inputFile + "|outputfile:" + outputFile + "|inputLine" + outputLimit);
@@ -25,7 +27,6 @@ public class IOProcess implements Runnable{
         } catch (IOException e) {
             logger.error("inputFile：" + inputFile + "|outputfile:" + outputFile + "|inputLine" + outputLimit, e);
         }
-
     }
     @Override
     public void run() {
@@ -34,11 +35,16 @@ public class IOProcess implements Runnable{
             String source = readLine();
             if (source == null || source.isEmpty()) break;    //感觉不够优雅
             //TODO: 交由webProcess处理
-            writeLine(source + "\n");
+            String result = webProcess.work(source);
+            writeLine(result);
             --outputLimit;
         }
         close();
         logger.info("工作完成：inputFile：" + inputFile + "|outputfile:" + outputFile + "|inputLine" + outputLimit);
+    }
+
+    public void setWebProcess(WebProcess webProcess) {
+        this.webProcess = webProcess;
     }
 
     public String readLine() {
@@ -61,6 +67,7 @@ public class IOProcess implements Runnable{
     }
 
     public void close() {
+        webProcess.close();
         try {
             br.close();
             out.close();
