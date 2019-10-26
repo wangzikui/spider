@@ -60,6 +60,7 @@ public class IOProcess implements Runnable{
     }
 
     public void writeLine(String line) {
+        if (line == null || line.isEmpty()) return;
         try {
             out.write(line);
             out.flush();

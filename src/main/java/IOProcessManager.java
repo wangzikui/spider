@@ -18,7 +18,7 @@ public class IOProcessManager {
     private String outputPrefix = "";  //匹配输出文件前缀
     private String outputSuffix = ".txt";  //匹配输出文件后缀
     private int outputLimit = 100; //超出limit，将.tmp后缀去掉，并关闭输出流
-    private int maxAsycNum = 5; //最大同时工作的线程
+    private int maxAsycNum = 8; //最大同时工作的线程
     private ThreadPoolExecutor pool = null;    //管理IOProcess的线程池
 
     public IOProcessManager() {

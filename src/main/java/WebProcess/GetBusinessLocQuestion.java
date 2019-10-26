@@ -11,6 +11,7 @@ import org.openqa.selenium.remote.RemoteWebDriver;
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 /**
@@ -49,7 +50,8 @@ public class GetBusinessLocQuestion implements IWorkable{
         patterns.add(Pattern.compile(pattern1));
         String pattern2 = "(?<=locations).*?\"name\":\".*?(?=\")"; //":[{"id":"19560551","type":"topic","url":"http:\u002F\u002Fwww.zhihu.com\u002Ftopics\u002F19560551","name":"深圳市
         patterns.add(Pattern.compile(pattern2));
-        String pattern3 = "(?<=answersByUser\":).*(?=,\"totals)";   //{"yunduanxxooo":{"isDrained":false,"isFetching":false,"ids":[868932101,868879160,868846834,866405653,865363451,865359416,865356867,865356012,865351217,865348945,null,null]
+        String pattern3 = "(?<=\"https://www.zhihu.com/question/)\\d*";   //274741086
+        patterns.add(Pattern.compile(pattern3));
     }
 
     @Override
@@ -59,13 +61,45 @@ public class GetBusinessLocQuestion implements IWorkable{
 
         StringBuilder sb = new StringBuilder();
         webDriver.get(answersUrl);
-        webDriver.getPageSource();
+        String source = webDriver.getPageSource();
+
         //TODO:执行
-        return null;
+        Matcher m1 = patterns.get(0).matcher(source);
+        if (m1.find()) {
+            String tmp = m1.group();
+            if (tmp.length() < 44) {    //没写行业
+                tmp = "";
+            } else {
+                String[] str = tmp.split("\"");
+                tmp = str[str.length - 1];
+            }
+            sb.append(tmp).append("\t");
+        }
+
+        Matcher m2 = patterns.get(1).matcher(source);
+        if (m2.find()) {
+            String tmp = m2.group();
+            if (tmp.length() < 50) {    //没写居住地
+                tmp = "";
+            } else {
+                String[] str = tmp.split("\"");
+                tmp = str[str.length - 1];
+            }
+            sb.append(tmp).append("\t");
+        }
+
+        Matcher m3 = patterns.get(2).matcher(source);
+        while (m3.find()) {
+            sb.append(m3.group()).append(",");
+        }
+
+        String result = sb.append("\n").toString();
+        logger.info(result);
+        return result;
     }
 
     @Override
     public void close() {
-
+        webDriver.close();
     }
 }
