@@ -99,12 +99,22 @@ public class Spider {
             ioProcessManager.addProcess(getBusinessLocQuestion);
             //if(i % 5 == 0) Thread.sleep(1000*600);
             --i;
-
         }
     }
 
-    public static void mapQID2Tag() {
-        IWorkable mapQID2Tag = new MapQID2Tag();
-        mapQID2Tag.work("互联网\t深圳市\t326511036,48510028,326511036,319371540,48510028,319371540,331904582,48510028,331904582,");
+    public static void mapQID2Tag() throws InterruptedException {
+        /*IWorkable mapQID2Tag = new MapQID2Tag();
+        mapQID2Tag.work("互联网\t深圳市\t326511036,48510028,326511036,319371540,48510028,319371540,331904582,48510028,331904582,");*/
+        IOProcessManager ioProcessManager = new IOProcessManager( "src/ioDir/business_loc_Question_output/1",  "src/ioDir/spider_final", "", "txt", 1000);
+        ioProcessManager.init();
+
+        int i = 9;
+        while (i > 0) {
+            IWorkable mapQID2Tag = new MapQID2Tag();
+            ioProcessManager.addProcess(mapQID2Tag);
+            //if(i % 5 == 0)
+                Thread.sleep(1000*600);
+            --i;
+        }
     }
 }

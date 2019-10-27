@@ -1,6 +1,5 @@
 package WebProcess;
 
-import net.sf.cglib.asm.$Attribute;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.openqa.selenium.WebDriver;
@@ -43,7 +42,7 @@ public class MapQID2Tag implements IWorkable {
         dc.setCapability(ChromeOptions.CAPABILITY, chromeOptions);
         webDriver = new RemoteWebDriver(service.getUrl(), dc);
 
-        String pattern = "(?<=keywords\" content=\").*?(?=\">)";
+        String pattern = "(?<=keywords\" content=\").*?(?=\")";
         patterns.add(Pattern.compile(pattern));
     }
 
@@ -55,25 +54,33 @@ public class MapQID2Tag implements IWorkable {
 
     @Override
     public String work(String input) {
+        logger.info(input);
+
+        if (input == null) return null;
         String[] source = input.split("\t");
         if (source.length < 3) {
             return null;
         }
-
+        logger.info("1");
         StringBuilder sb = new StringBuilder();
         String[] QID = source[2].split(",");
         if (QID.length == 0 || QID[0].equals("null")) return null;
-
-        int i = 3;
+        logger.info("2");
+        int i = Integer.min(3, QID.length);
         while (i > 0) {
             String qUrl = url + QID[i - 1];
+            logger.info("m1");
             webDriver.get(qUrl);
+            logger.info("m2");
             Matcher m = patterns.get(0).matcher(webDriver.getPageSource());
+            logger.info("m3");
             if (m.find()) {
                 sb.append(m.group()).append(",");
             }
+            logger.info("m4");
             --i;
         }
+        logger.info("3");
         sb.insert(0, source[1] + "\t");
         sb.insert(0, source[0] + "\t");
         String result = sb.append("\n").toString();

@@ -28,7 +28,7 @@ asks
 
 问题： 第13行
 <meta itemprop="keywords" content="编程,Linux,计算机,开源,计算机科学">
-或(?<=keywords" content=").*?(?=">)  编程,Linux,计算机,开源,计算机科学
+或(?<=keywords" content=").*?(?=")  编程,Linux,计算机,开源,计算机科学
 
 
 种子数据

@@ -72,6 +72,7 @@ public class ExtendUserToken implements IWorkable {
     }
 
     public String work(String input) {
+        if (input == null) return null;
         String peopleUrl = url + input;    //e.g. https://www.zhihu.com/people/octavia-51-97/
         String followingUrl = peopleUrl + "/" + "following";  //e.g. https://www.zhihu.com/people/octavia-51-97/following //TODO:考虑是否把followers加上
         String answersUrl = peopleUrl + "/" + "answers";  //https://www.zhihu.com/people/octavia-51-97/answers    //TODO:考虑是否把asks加上

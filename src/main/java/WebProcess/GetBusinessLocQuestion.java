@@ -56,6 +56,7 @@ public class GetBusinessLocQuestion implements IWorkable{
 
     @Override
     public String work(String input) {
+        if (input == null) return null;
         String peopleUrl = url + input;    //e.g. https://www.zhihu.com/people/octavia-51-97/
         String answersUrl = peopleUrl + "/" + "answers";  //https://www.zhihu.com/people/octavia-51-97/answers    //TODO:考虑是否把asks加上
 
