@@ -105,7 +105,7 @@ public class Spider {
     public static void mapQID2Tag() throws InterruptedException {
         /*IWorkable mapQID2Tag = new MapQID2Tag();
         mapQID2Tag.work("互联网\t深圳市\t326511036,48510028,326511036,319371540,48510028,319371540,331904582,48510028,331904582,");*/
-        IOProcessManager ioProcessManager = new IOProcessManager( "src/ioDir/business_loc_Question_output/1",  "src/ioDir/spider_final", "", "txt", 1000);
+        IOProcessManager ioProcessManager = new IOProcessManager( "src/ioDir/business_loc_Question_output/2",  "src/ioDir/spider_final", "", "txt", 1000);
         ioProcessManager.init();
 
         int i = 9;
