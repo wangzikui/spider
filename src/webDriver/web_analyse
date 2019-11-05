@@ -1,0 +1,54 @@
+关注与被关注：第17行
+对标志性的urlToken做查询,后跟用户个性域名路由
+https://www.zhihu.com/people/basicthinker/followers
+翻页相关：https://www.zhihu.com/people/basicthinker/following?page=2	第二页
+"followerCount":974,"followingCount":304	每页20人
+https://www.zhihu.com/people/${urltoken}/...	查询
+或12行<a class=UserLink-link>找herf
+business后json内有所在行业名
+(?<=urlToken":").*?(?=")
+行业(?<=business).*?"name":".*?(?=")得":{"id":"19619368","type":"topic","url":"http:\u002F\u002Fwww.zhihu.com\u002Ftopics\u002F19619368","name":"计算机软件
+居住地(?<=locations).*?"name":".*?(?=")
+
+
+回答： 19行
+回答数："zhihu:answerCount" content="27"
+一页20，分页
+匹配第一个"ids"后的[733345325,689570417,689567708,646065072,639054337,376292523,366184154,176528653,157576160,121267551,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null]
+或"https://www.zhihu.com/question/\d*?"
+或"用户个性id":{"isDrained":.*,"isFetching":.*,"ids".*?]
+或(?<=answersByUser":).*(?=,"totals)
+
+提问： 18行
+asks
+"用户个性id":{"isDrained":.*,"isFetching":false,"ids".*?]
+或匹配第一个"ids"后的[344873613,36315782,21279169,21093336,20849021,20127917,20126033,19989833,false,false,false,false,false,false,false,false,false,false,false,false]，内为问题标号
+或(?<=questionsByUser":).*(?=,"totals)
+或(?<=question","id":).*?(?=})
+
+问题： 第13行
+<meta itemprop="keywords" content="编程,Linux,计算机,开源,计算机科学">
+或(?<=keywords" content=").*?(?=")  编程,Linux,计算机,开源,计算机科学
+
+
+种子数据
+urltoken表
+
+第一阶段爬虫
+urltoken    关注与被关注17行   answers第19行 asks第18行    //由此可得到目标对象行业（用于统计），feed圈（用于下一次迭代），关注问题（用于获取目标对象的关注领域，用于统计）
+产物：文件写满100行，传至hdfs
+
+第一阶段spark处理
+用户行业（关注与被关注17行）feed列表（关注与被关注17行）交互问题列表（answers第19行 asks第18行）
+产物：hfile
+
+第二阶段爬虫
+feed列表更新种子数据，交互问题列表用来第二阶段爬取，获取问题第13行
+输出内容：
+行业  问题第13行
+产物：文件写满100行，传至hdfs
+
+第二阶段spark处理
+用户行业    关注行业（问题第13行）
+kv对累加，入mongo
+
