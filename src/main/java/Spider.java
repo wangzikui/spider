@@ -53,7 +53,8 @@ public class Spider {
         }*/
         //reduceDuplicate();
         //getLocBusinessQuestion();
-        mapQID2Tag();
+        //mapQID2Tag();
+        mv();
     }
 
     public static void extendUrlTokens() throws InterruptedException{
@@ -114,6 +115,28 @@ public class Spider {
             ioProcessManager.addProcess(mapQID2Tag);
             //if(i % 5 == 0)
                 Thread.sleep(1000*600);
+            --i;
+        }
+    }
+
+    public static void mv() throws InterruptedException {
+       IWorkable mv = new IWorkable() {
+           @Override
+           public String work(String input) {
+               return input;
+           }
+
+           @Override
+           public void close() {}
+       };
+        IOProcessManager ioProcessManager = new IOProcessManager( "/Users/skedush/IdeaProjects/first/src/testData",  "/Users/skedush/IdeaProjects/first/src/testData2", "", "txt", 1000);
+        ioProcessManager.init();
+
+        int i = 9;
+        while (i > 0) {
+            ioProcessManager.addProcess(mv);
+            //if(i % 5 == 0)
+            Thread.sleep(1000*20);
             --i;
         }
     }
