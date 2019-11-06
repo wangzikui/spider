@@ -54,7 +54,8 @@ public class Spider {
         //reduceDuplicate();
         //getLocBusinessQuestion();
         //mapQID2Tag();
-        Senario.mv();
+        //Senario.mv();
+        Senario.zhuhuJsonParse();
     }
 
 }

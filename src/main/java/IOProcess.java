@@ -34,12 +34,12 @@ public class IOProcess implements Runnable{
     public void run() {
         logger.info("开始工作：inputFile：" + inputFile + "|outputfile:" + outputFile + "|inputLine" + outputLimit);
         while (outputLimit > 0) {
-            logger.info("readline");
+            //logger.info("readline");
             String source = readLine();
             //TODO: 交由webProcess处理
-            logger.info("work");
+            //logger.info("work");
             String result = workable.work(source);
-            logger.info("writeline");
+            //logger.info("writeline");
             writeLine(result);
             //if (source == null || source.isEmpty()) break;    //感觉不够优雅
             --outputLimit;
